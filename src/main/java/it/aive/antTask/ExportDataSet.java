@@ -15,7 +15,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 public class ExportDataSet {
 
 	/** 
-	 * @param args
+	 * Test
 	 */
 	public static void main(String[] args) {
 		// database connection
