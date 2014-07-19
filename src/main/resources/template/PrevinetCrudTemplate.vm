@@ -1,0 +1,182 @@
+
+<!ENTITY ${previnet.prefisso}-bean-$table.tableName '
+    
+    <bean>
+      <description>Bean relativo alla tabella $table.tableName </description>
+      <name>$bean.name</name>
+      <serializable/>
+      <properties>
+#foreach( $att in $bean.attributes )
+  				<property>
+    					<name>$att.attName</name>
+    					<type>$att.attType</type>
+  				</property>
+         #end    
+      </properties>
+      <to-string/>
+    </bean>
+'>
+
+<!ENTITY ${previnet.prefisso}-result-set-$table.tableName '
+
+    <result-set>
+      <description>Resultset Relativo alla tabella  $table.tableName </description>
+      <name>${table.tableName}_resultSet</name>
+      <fields>
+      #foreach( $field in $table.column )
+      
+				<field>
+				  <name>$field.columnName</name>
+				  <java-type>$field.dataTypeConvertito</java-type>
+				  <sql-code>$field.columnName</sql-code>
+				</field>
+   
+    #end       
+       </fields>
+    </result-set>
+ '>
+   
+ <!ENTITY ${previnet.prefisso}-mapping-$table.tableName ' 
+
+    
+    <mapping>
+      <description> Mapping relativo alla tabella ${table.tableName} </description>
+      <name>${table.tableName}_mapping</name>
+      <result-set-ref>${table.tableName}_resultSet</result-set-ref>
+      <bean-ref>$bean.name</bean-ref>
+      <fields-mapping>
+       
+         #foreach( $field in $table.column )
+         
+				<field-mapping>
+					<field-ref>$field.columnName</field-ref>
+					<property-ref>$bean.attributes.get($velocityCount).attName</property-ref>
+				</field-mapping>
+						
+         #end 
+    
+      </fields-mapping> 
+    </mapping>
+ '>
+
+   
+<!-- ##################################################  
+       	Inizio store  procedure  di insert per tabella		${table.tableName}
+    ##################################################  -->    
+
+<!ENTITY ${previnet.prefisso}-procedure-insert${table.tableName} '  
+ 
+   <stored-procedure>
+      <description></description>
+      <name>${previnet.prefissoStoreProcedure}_insert_${table.tableName}</name>
+      <java-name>insert$bean.name</java-name>
+      
+      <sql-data-sources>
+        <data-source-ref-name>${previnet.dataSource}</data-source-ref-name>
+      </sql-data-sources>
+      
+      <sql-params>
+       #foreach( $field in $table.column )
+       
+        <sql-param>
+          <name>${field.columnName}</name>
+          <java-name>$bean.attributes.get($velocityCount).attName</java-name>
+          <sql-type>${field.dataType}</sql-type>
+          <java-type>$bean.attributes.get($velocityCount).attType</java-type>
+        </sql-param>
+       
+       #end 
+      <sql-implementation>
+  
+
+	  DECLARE @token int
+	  EXECUTE @token = sp_get_number "RCL";
+		
+		IF (@token IS NULL)
+		  RETURN -2
+		
+		INSERT INTO portafoglio_modello_ricl_ptf (
+		  #foreach( $field in $table.column )
+        ${field.columnName},
+       #end 
+		  ) VALUES (
+		  @token,
+		  #foreach( $field in $table.column )
+         <sql-param-ref>${field.columnName}</sql-param-ref>,
+       #end 
+		  )
+		 
+		
+		
+		IF (@@ERROR &lt;&gt; 0)
+		  RETURN -1
+		
+		RETURN @token
+      </sql-implementation>
+    </stored-procedure> 
+ '>
+
+<!--       Fine store  procedure  di insert per tabella		$table.tableName   -->    
+
+<!-- -------------------------------------------------------
+	Inizio metodo  remoto  di insert per tabella		$table.tableName  
+	------------------------------------------------------------------ -->    
+   
+    <!ENTITY ${previnet.prefisso}-method-insert{$bean.name} '     
+       
+        <method interface="remote" trans-attribute="RequiresNew">
+          <name>insert${bean.name}</name>
+          <roles>
+            <role>${previnet.role}</role>
+          </roles>
+          <params>
+            <param>
+              <name>bean</name>
+              <type>$bean.name</type>
+            </param>
+          </params>
+          <result>
+            <type>int</type>
+          </result>
+           <exceptions>                                                                                                        
+           		<exception>CannotMakeOperationException</exception>                                                               
+          </exceptions> 
+
+          <body>
+         int tokenReturned=-2; 
+		 try {
+  
+			
+			  
+		  int	tokenReturned = insert${bean.name}Wrapper(
+		  #foreach( $att in $bean.attributes )
+  			 <param-ref>bean</param-ref>.get$utility.firstToUpperCase($att.attName)() , 
+      #end    
+		  );
+		 
+
+  			if(tokenReturned == -2){
+				throw new CannotMakeOperationException("associaPortafoglioModello() :::: ERRORE - @token NULL");
+  			}else if(tokenReturned == -1){
+				throw new CannotMakeOperationException("associaPortafoglioModello() :::: ERRORE - esecuzione comando DB");
+  			}
+		   
+		} catch (CannotMakeOperationException cmoe) {
+    			sessionContext.setRollbackOnly();
+			    throw cmoe;
+		}
+ 		
+ 		return tokenReturned;
+ 		
+          </body>
+  </method>
+
+'>
+
+<!ENTITY ${previnet.prefisso}-method-Wrapperinsert${bean.name} '
+       <method interface="none">
+          <name>insert${bean.name}Wrapper</name>
+          <stored-procedure-ref>${previnet.prefissoStoreProcedure}_insert_${table.tableName}</stored-procedure-ref>
+        </method>
+
+'>  

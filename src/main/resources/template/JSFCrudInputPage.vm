@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+
+	<rich:modalPanel id="InsertUpdateDelete${utility.firstToUpperCase(${page.name})}" autosized="true" domElementAttachment="parent" height="400" width="650">		
+		<f:facet name="header">
+			<h:outputText value=" Inserimento/Modifica" />
+		</f:facet>
+		
+		<f:facet name="controls">
+			<h:panelGroup>
+				<h:graphicImage value="/images/modal/close.png" id="hidelink2"
+					styleClass="hidelink" />
+				<rich:componentControl for="InsertUpdateDelete${utility.firstToUpperCase(${page.name})}" attachTo="hidelink2"
+					operation="hide" event="onclick" />
+			</h:panelGroup>
+		</f:facet>
+
+		<rich:messages layout="list">
+			<f:facet name="errorMarker">
+				<h:graphicImage value="/images/ajax/error.gif" />
+			</f:facet>
+		</rich:messages>
+
+
+		<a4j:form>
+					<h:panelGrid columns="3">
+							
+
+ 					 #foreach( $att in $page.bean.attributes )
+   						#if( $att.attType == "java.lang.String" )
+    							<h:outputLabel styleClass="etichetta" value="$att.attName:   " />
+   								<h:inputText id="$att.attName"	value="#{${page.beanName}.${att.attName}}" />
+								<rich:message for="$att.attName">
+								   <f:facet name="errorMarker">
+										<h:graphicImage value="/images/ajax/error.gif" />
+									</f:facet>
+				                </rich:message>
+                        #elseif ( $att.attType == "java.util.Date" )
+                            <h:outputLabel styleClass="etichetta" value="${att.attName}:" />
+								<rich:calendar label="$att.attName:" id="${att.attName}"
+									value="#{${page.beanName}.${att.attName}}" datePattern="dd/MM/yyyy">
+								</rich:calendar>
+							<rich:message for="${att.attName}">
+									<f:facet name="errorMarker">
+										<h:graphicImage value="/images/ajax/error.gif" />
+									</f:facet>
+							</rich:message>
+    					#else
+                             <h:outputLabel styleClass="etichetta" value="${att.attName}:   " />
+   								<h:inputText id="$att.attName"	value="#{${page.beanName}.${att.attName}}" />
+								<rich:message for="${att.attName}" >
+								   <f:facet name="errorMarker">
+										<h:graphicImage value="/images/ajax/error.gif" />
+									</f:facet>
+				                </rich:message>
+                        #end
+   							
+   								
+								
+  					  #end
+								
+					</h:panelGrid>		
+			<!-- Metto un po di spazio tra i tab e i bottoni -->
+			<rich:spacer height="40" />
+
+			<!-- Separatore linea blu -->
+			<rich:separator></rich:separator>
+
+			<!-- I bottoni sono all'interno una tabella
+			con 2 colonne. La prima contiene solo lo spacer
+			e serve per spostare i bottoni verso sinistra
+			la seconda colonna contiene un panel grid per mantenerli vicini
+			Lavorando con il panelgrid piu intendo posso spostare i bottoni -->
+
+			<h:panelGrid columns="2" width="100%">
+				<h:panelGroup>
+					<rich:spacer height="1" width="100" />				
+				</h:panelGroup>
+
+				<h:panelGrid columns="2">
+				
+					<a4j:commandButton style="width: 70px;" value="Ok" action="#{${page.beanName}.go}" reRender="table"
+						oncomplete="if (#{facesContext.maximumSeverity==null}) #{rich:component('InsertUpdateDelete${utility.firstToUpperCase(${page.name})}')}.hide();" />
+					
+					<a4j:commandButton value="Annulla" action="#{${page.beanName}.annulla}" immediate="true"
+						oncomplete="if (#{facesContext.maximumSeverity==null}) #{rich:component('InsertUpdateDelete${utility.firstToUpperCase(${page.name})}')}.hide();" />
+						
+				</h:panelGrid>
+
+			</h:panelGrid>
+			
+			<rich:separator></rich:separator>
+
+		</a4j:form>
+	</rich:modalPanel>
+
+	<rich:modalPanel  id="delete"   height="100" width="300" autosized="true">
+            <f:facet name="header">
+                <h:outputText value="Cancellazione" />
+            </f:facet>
+            <f:facet name="controls">
+            	<h:panelGroup>
+                	<h:graphicImage value="/images/modal/close.png" styleClass="hidelink" id="hidelink"/>
+                	<rich:componentControl for="delete" attachTo="hidelink" operation="hide" event="onclick"/>
+            	</h:panelGroup>
+        	</f:facet>
+        	
+        	<rich:messages layout="list">
+				<f:facet name="errorMarker">
+					<h:graphicImage value="/images/ajax/error.gif" />
+				</f:facet>
+		    </rich:messages>
+            
+            <a4j:form>
+          
+               <h:panelGrid>
+         		   <h:outputText value="Sei sicuro di voler procedere con la cancellazione ?" />
+       			</h:panelGrid> 
+       			
+       			<rich:spacer height="10" />
+       			
+       			<h:panelGrid  columns="3">
+       			   <h:panelGroup >
+				   		<rich:spacer height="1" width="90" />
+					</h:panelGroup>
+       				
+       				<h:panelGrid  columns="2">
+						<a4j:commandButton value="Si" 
+					        reRender="table"
+					        action="#{${page.beanName}.cancella}" 
+					        oncomplete=" if (#{facesContext.maximumSeverity==null}) #{rich:component('delete')}.hide();"></a4j:commandButton>
+						<a4j:commandButton value="No" action="#{${page.beanName}.annulla}"  oncomplete="#{rich:component('delete')}.hide();" immediate="true"></a4j:commandButton>
+					</h:panelGrid>
+				</h:panelGrid>
+				
+			</a4j:form>
+ 
+  </rich:modalPanel>
+	
+	
+	
+</ui:composition>

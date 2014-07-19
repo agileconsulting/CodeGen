@@ -1,0 +1,105 @@
+package $page.bean.packageName;
+
+import it.compu.framework.DomainObject;
+import it.compu.framework.frontEnd.DataTableBackingBean;
+//package dove sono contenuti i domain Object
+import $page.domainObject.packageName.*;
+#foreach( $val in $page.bean.importedPackage )
+import   $val ;
+  	
+#end
+
+
+#foreach( $att in $page.domainObject.attributes )
+#if( $att.attType =="java.util.Set" )
+import  java.util.Set;
+import  java.util.HashSet;
+     #end 	
+#end
+
+/**
+ * $name 
+ * <br>
+ * <b> Storia delle  Modifiche </b>
+ * <br> $utility.getActualData() Prima Versione
+ * <br>
+ * @author Marco Baraldi
+ * @version 1.0
+ */
+
+
+#if( $page.bean.extendClass == "" )
+    public class $page.bean.name implements java.io.Serializable  {
+#else
+    public class $page.bean.name extends $page.bean.extendClass implements java.io.Serializable {
+#end
+  
+  
+    public  void initProperty() throws Exception {
+		setDomainObjectClass(${page.domainObject.name}.class);
+	
+    }
+	public  void initPropertyPrepareUpdate() throws Exception {
+		
+    	
+	}
+	public  void initPropertyPrepareInsert() throws Exception {
+		
+		}
+	public  void initPropertyPrepareDelete() throws Exception {
+		// nothing to do
+	}
+	
+	public  void initPropertyUpdate() throws Exception {
+		
+			
+	}   
+	public  void initPropertyInsert() throws Exception {
+		
+	}
+	
+	public  void initPropertyDelete()throws Exception {
+		// nothing to do
+	}
+
+//~ Instance fields --------------------------------------------------------
+#foreach( $att in $page.bean.attributes )
+  
+   #if( $att.attType =="java.util.Set" )
+	  private $att.attType $att.attName = new HashSet(0);
+   #else
+      private $att.attType $att.attName;
+   #end 	
+#end
+
+     /**
+     * Creates a new  object.
+     */
+    public $page.bean.name () {
+    }
+    
+//~ Methods ----------------------------------------------------------------  
+
+
+    #foreach( $att in $page.bean.attributes )
+    /**
+     * setter for attribute  $att.attName
+     *
+     *  
+     */
+    public void set$utility.firstToUpperCase($att.attName) ( $att.attType datum) {
+        this.$att.attName = datum;
+    }
+
+    /**
+     * getter for attribute  $att.attName
+     *
+     *  
+     */
+    public $att.attType get$utility.firstToUpperCase($att.attName) () {
+        return $att.attName;
+    }
+    #end
+    
+} 
+/* End of File */

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="schemaImp" class="it.aive.codeGenerator.importer.SchemaImporter" >
+	<property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
+	<property name="url" value="jdbc:oracle:thin:@192.168.41.129:1521:xe"/>
+    <property name="userName" value="xdev"/> 
+    <property name="password" value="xdev"/>
+</bean>
+
+
+<bean id="facesConfigTemplate" class="it.aive.codeGenerator.template.FileTemplate">
+  <property name="templateFile" value="template\JSFCrudFacesConfig.vm" />
+</bean>
+
+
+
+<bean id="modulo_CRUD" class="it.aive.codeGenerator.project.jsf.JsfCrudModule">
+	<property name="name" value="modulo1" />
+	<property name="configFileTemplate"><ref bean="facesConfigTemplate"/> </property>
+  
+  		
+	<property name="domainObjectList">
+     		<list>
+        		<value>it.compu.gestImpiegati.domainObject.Dept</value>
+        		<value>it.compu.gestImpiegati.domainObject.Emp</value>
+     		</list>
+  		 </property>
+
+</bean>
+
+<bean id="modulo_Generico" class="it.aive.codeGenerator.project.jsf.GenericModuleList">
+	<property name="name" value="modulo1" />
+	<property name="configFileTemplate"><ref bean="facesConfigTemplate"/> </property>
+  
+  		
+	<property name="moduleNameList">
+     		<list>
+        		<value>attibuzioneDelega</value>
+        		<value>approvazioneTurno</value>
+        	</list>
+  		 </property>
+
+</bean>
+
+<bean id="project" class="it.aive.codeGenerator.project.Project">
+         <property name="packagePrefix" value="it.compu"></property>
+         <property name="sourceDir" value="C:\Documents and Settings\mbaraldi\workspace\GestoreTurni\src\main\java\"></property>
+         <property name="viewDir" value="C:\Documents and Settings\mbaraldi\workspace\GestoreTurni\src\main\webapp\"></property>
+         <property name="configDir" value="C:\Documents and Settings\mbaraldi\workspace\GestoreTurni\src\main\resources\"></property>
+        
+         <property name="name" value="prova" />
+ 		 <property name="schema"><ref bean="schemaImp"/> </property>
+  		
+  		 <property name="modules">
+     		<list>
+        		<ref bean="modulo_Generico"/>
+     		</list>
+  		 </property>
+</bean>
+
+</beans>

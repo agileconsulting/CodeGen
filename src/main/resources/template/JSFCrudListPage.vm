@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+<ui:composition template="/WEB-INF/layout/layout.xhtml">
+	<ui:define name="title">
+	</ui:define>
+	<ui:define name="content">
+	
+	<!-- Includo i modal panel che serviranno per la cancellazione 
+	      e per inserimento/ modifica dei dati -->
+		
+		<a4j:include viewId="$page.inputTemplate.destinationFileName" />
+		
+
+
+     
+	      
+		<a4j:form ajaxSubmit="true">
+			<rich:panel styleClass="dim_central">
+				<f:facet name="header">
+           			Risultato della Ricerca
+        		</f:facet>
+                
+                <!-- Importante -->
+				
+				<rich:messages layout="list">
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/ajax/error.gif" />
+					</f:facet>
+				</rich:messages>
+
+				<rich:contextMenu attached="false" id="menu" submitMode="ajax">
+					<rich:menuItem value="Nuovo"
+						action="#{${page.beanName}.prepareInsert}"
+						oncomplete="#{rich:component('InsertUpdateDelete${utility.firstToUpperCase(${page.name})}')}.show()"
+						reRender="InsertUpdateDelete${utility.firstToUpperCase(${page.name})}" icon="/images/menu/inserimento.gif">
+                   </rich:menuItem>
+ 
+					<rich:menuItem value="Modifica"
+  					    action="#{${page.beanName}.prepareUpdate}"
+						oncomplete="#{rich:component('InsertUpdateDelete${utility.firstToUpperCase(${page.name})}')}.show()"
+						reRender="InsertUpdateDelete${utility.firstToUpperCase(${page.name})}" icon="/images/menu/modifica.gif">
+						<a4j:actionparam name="selectedKey" assignTo="#{${page.beanName}.selectedItemKey}"
+							value="{key}" />
+			    	</rich:menuItem>
+
+					<rich:menuItem value="Cancella"
+						oncomplete="#{rich:component('delete')}.show()"
+						action="#{ ${page.beanName}.prepareDelete}"
+						reRender="delete"
+						icon="/images/menu/cancella.jpg">
+						<a4j:actionparam name="selectedKey" assignTo="#{${page.beanName}.selectedItemKey}"
+							value="{key}" />
+					</rich:menuItem>
+					
+				</rich:contextMenu>
+
+
+				<rich:dataTable id="table" width="600px" sortMode="single"
+					var="item" align="center"
+					value="#{ ${page.beanName}.queryResult}" rowKeyVar="row" rows="10"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
+					rendered="#{! ${page.beanName}.vuoto}">
+
+
+			#foreach( $att in $page.bean.attributes )
+   					#if( $att.attType == "java.lang.String" )
+   								<rich:column label="${att.attName}" sortable="true">
+   									<f:facet name="header">
+                    					<h:outputText value="${att.attName}" />
+                            	    </f:facet>
+                                	<h:outputText value="#{item.${att.attName}}"></h:outputText>
+                        		</rich:column>
+  					#elseif ( $att.attType == "java.util.Date" ) 
+  					 <rich:column label="${att.attName}" sortable="true">
+   									<f:facet name="header">
+                    					<h:outputText value="${att.attName}" />
+                            	    </f:facet>
+                                	<h:outputText value="#{item.${att.attName}}">
+                                	<f:convertDateTime  pattern="dd/MM/yyyy" timeZone="Europe/Rome" />
+                                	</h:outputText>
+                        		</rich:column>
+  				   #else
+                     <rich:column label="${att.attName}" sortable="true">
+   									<f:facet name="header">
+                    					<h:outputText value="${att.attName}" />
+                            	    </f:facet>
+                                	<h:outputText value="#{item.${att.attName}}"></h:outputText>
+                      </rich:column>
+                   #end  			
+  			#end
+					       
+                        
+                        <rich:componentControl event="onRowClick" for="menu"	operation="show">
+						<f:param value="#{item.keyValue}" name="key" />
+					</rich:componentControl>
+				</rich:dataTable>
+				
+				<rich:spacer height="10"  />
+									
+					<rich:datascroller for="table" renderIfSinglePage="false" />
+
+				
+				<h:panelGrid columns="1" rendered="#{${page.beanName}.vuoto}">
+					<h:outputText value="Nessuna Riga Trovata" />
+				</h:panelGrid>
+
+			
+
+				
+
+			</rich:panel>
+		</a4j:form>
+	</ui:define>
+</ui:composition>
+</html>

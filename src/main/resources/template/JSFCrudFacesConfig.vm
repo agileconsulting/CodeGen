@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+ 
+ 
+ 
+ #foreach( $page in $pageList )
+  
+  
+  <managed-bean>
+  <managed-bean-name>$page.beanName</managed-bean-name>
+  <managed-bean-class>${page.bean.packageName}.${page.bean.name}</managed-bean-class>
+  <managed-bean-scope>$page.beanScope</managed-bean-scope>
+ </managed-bean>
+ 	
+#end
+ 
+
+ 
+ <application>
+  <locale-config>
+   <default-locale>it</default-locale>
+  </locale-config>
+  <message-bundle>Messages</message-bundle>
+ </application>
+</faces-config>

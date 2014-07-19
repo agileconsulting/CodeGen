@@ -1,0 +1,63 @@
+package $packageName;
+#foreach( $att in $attList )
+#if( $att.attType =="java.util.Set" )
+import  java.util.Set;
+import  java.util.HashSet;
+     #end 	
+#end
+/**
+ * $name 
+ * <br>
+ * <b> Storia delle  Modifiche </b>
+ * <br> $utility.getActualData() Prima Versione
+ * <br>
+ * @author Marco Baraldi
+ * @version 1.0
+ */
+
+#if( $extendClass == "" )
+    public class $name implements java.io.Serializable  {
+#else
+    public class $name extends $extendClass implements java.io.Serializable {
+#end
+
+
+//~ Instance fields --------------------------------------------------------
+#foreach( $att in $attributes )
+  
+   #if( $att.attType =="java.util.Set" )
+	  private $att.attType $att.attName = new HashSet(0);
+   #else
+      private $att.attType $att.attName;
+   #end 	
+#end
+
+     /**
+     * Creates a new  object.
+     */
+    public $name() {
+    }
+    
+//~ Methods ----------------------------------------------------------------  
+    #foreach( $att in $attributes )
+    /**
+     * setter for attribute  $att.attName
+     *
+     *  
+     */
+    public void set$utility.firstToUpperCase($att.attName) ( $att.attType datum) {
+        this.$att.attName = datum;
+    }
+
+    /**
+     * getter for attribute  $att.attName
+     *
+     *  
+     */
+    public $att.attType get$utility.firstToUpperCase($att.attName) () {
+        return $att.attName;
+    }
+    #end
+    
+} 
+/* End of File */

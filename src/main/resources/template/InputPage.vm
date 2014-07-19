@@ -1,0 +1,63 @@
+<jsp:include page="../layout/header.jsp"/>
+ <%--  tag di struts --%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
+
+
+
+<%-- 
+ Qui inizia il javascript che sarà richiamato al submit del form
+ --%>
+<script type="text/javascript" language="javascript">
+ 
+ 
+ function annulla(){
+      document.forms[0].evento.value="annulla";
+      document.forms[0].submit();
+ }
+ 
+ function esegui(){
+ 	// Aggiungere qui il codice javascript  per la validazione  Validazione
+ 	
+ 	
+ 	
+ 	// Se arrivo qui allora validazione OK
+ 	document.forms[0].submit();
+ 	
+ }
+ 
+</script>
+<div style="padding-top: 20px;">
+	<table border="0" width="95%" bgcolor="#BFCEEE" cellpadding="0" cellspacing="0" align="center">
+	        <tr>
+	          <td width="5">
+	            <img src="<%=request.getContextPath()%>\images\sx_cel.jpg">
+	          </td>
+	          <td align="center" class="verdanahn12"><span id="titoloFiltro">$title</span></td>
+	          <td width="5">
+	            <img src="<%=request.getContextPath()%>\images\dx_cel.jpg">
+	          </td>
+	       </tr>
+	</table>
+
+	<html:form  action="$action">
+        <input type="hidden" name="evento" value="<bean:write name="FormData" property="dynamicProps(evento)"/>"/> 
+
+
+  	<table border="0" width="95%" cellpadding="2" cellspacing="0" align="center" id="tableDettaglio">
+               $widgets	
+ 	 </table>
+<%-- 
+  Questa è la tabella che contiene i due bottoni con la chiamata alle rispettive funzioni javascript
+ --%>
+	<table border="0" width="95%" cellpadding="2" cellspacing="0" align="center">
+	    <tr bgcolor="#EAEFFF">
+        	<td align="right" colspan="8">
+			<html:button property="action" styleClass="form_button_short" onclick="esegui()" ><bean:message key='button.conferma' />" </html:button>
+			<html:button property="action" styleClass="form_button_short" onclick="annulla()"><bean:message key='button.indietro' />" </html:button>
+		</td>
+    	    </tr>
+       </table>
+</html:form>
+</div>
+<jsp:include page="../layout/footer.jsp"  />

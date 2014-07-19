@@ -1,0 +1,7 @@
+package ${packageName};
+import it.compu.framework.BusinessService;
+
+
+public interface ${moduleName}BusinessService extends BusinessService {
+ 
+}

@@ -1,0 +1,7 @@
+package ${packageName};
+
+
+import java.io.Serializable;
+
+public class ${moduleName}BusinessServiceImpl implements ${moduleName}BusinessService, Serializable {
+}

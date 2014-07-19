@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="schemaImp" class="it.aive.codeGenerator.importer.SchemaImporter" >
+	<property name="driverClass" value="com.sybase.jdbc2.jdbc.SybDriver"/>
+	<property name="password" value="fasiedbx"/>
+	<property name="userName" value="xfasiedb"/>
+	<property name="url" value="jdbc:sybase:Tds:dstest1:9200"/>
+</bean>
+
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="BusinessFactory" class="it.compu.framework.BusinessServiceFactory"  factory-method="createInstance"  />
+
+
+  
+  
+  
+     
+  <bean id="$moduleName" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <!-- Interfaccia del Business Services -->
+    <property name="proxyInterfaces"><value>${packageName}.${moduleName}BusinessService</value> </property>
+     		<!-- Implementazione del Business Services -->
+    		<property name="target">   <bean class="${packageName}.${moduleName}BusinessServiceImpl"/>
+     </property>
+     
+     <!-- Gestione delle transazioni: Dichiaro il transacton manager -->
+    <property name="transactionManager"><ref bean="transactionManager"/></property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+
+   </bean>
+   
+   
+ 
+  
+</beans>
